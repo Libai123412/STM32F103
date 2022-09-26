@@ -34,7 +34,7 @@ void PID_Calculate_Positional(PID_STU* PID, float Measure, float Target)
 }
 
 
-void PID_init()
+void PID_init()//PID的具体值自己调一下每个3508不一样
 {
 	m3508[0].M3508_Speed_PID.KP = 0.47;
 	m3508[0].M3508_Speed_PID.KI = 0.1;
