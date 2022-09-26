@@ -44,31 +44,26 @@ void M3508_Speed_Mode(M3508_STU *M3508, int16_t Speed)
 	M3508->output = M3508->M3508_Speed_PID.Output;
 }
 
-//float k = 1;
-//void M3508_Angle_PID(M3508_STU *M3508, int16_t Angle)
-//{ 
-//	PID_Calculate_Incremental(&(M3508->M3508_Angle_PID), M3508->angle_sum, Angle*8191/360);
-////	if(M3508->M3508_Angle_PID.Output > 65535)M3508->M3508_Angle_PID.Output = 65535;
-////	if(M3508->M3508_Angle_PID.Output < -65535)M3508->M3508_Angle_PID.Output=-65535 ;
-////	if((M3508->M3508_Angle_PID.Output < 50) &&(M3508->output > -50)) M3508->M3508_Angle_PID.Output = Angle*8191/360;
-////	
-//	if(M3508->M3508_Angle_PID.Output > 30000)M3508->M3508_Angle_PID.Output = 30000;
-//	if(M3508->M3508_Angle_PID.Output < -30000)M3508->M3508_Angle_PID.Output= -30000 ;
-//	M3508->output =  (int16_t)M3508->M3508_Angle_PID.Output;
-//	if(M3508->output > 1000)M3508->output = 1000;
-//	if(M3508->output < -1000)M3508->output = -1000;
-//	if((M3508->output < 50) &&(M3508->output > -50)) M3508->output = 0;
-//	
-//}
-
-void M3508_Angle_PID(M3508_STU *M3508, int16_t Angle)
-{
-	PID_Calculate_Positional(&(M3508->M3508_Angle_PID), M3508->angle_sum, Angle);
+void M3508_Angle_PID(M3508_STU *M3508, int16_t Angle)//串级pid控制角度
+{ 
+	PID_Calculate_Positional(&(M3508->M3508_Angle_PID), M3508->angle_sum, Angle*8191/360);	
+	if(M3508->M3508_Angle_PID.Output > 30000)M3508->M3508_Angle_PID.Output = 30000;
+	if(M3508->M3508_Angle_PID.Output < -30000)M3508->M3508_Angle_PID.Output= -30000 ;
+	PID_Calculate_Incremental(&(M3508->M3508_Speed_PID), M3508->speed, M3508->M3508_Angle_PID.Output);
+	M3508->output = M3508->M3508_Speed_PID.Output;
+	if(M3508->output > 1000)M3508->output = 1000;
+	if(M3508->output < -1000)M3508->output = -1000;
+	if((M3508->output < 50) &&(M3508->output > -50)) M3508->output = 0;
 	
-	if(M3508->M3508_Angle_PID.Output>30000)M3508->M3508_Angle_PID.Output = 30000;
-	if(M3508->M3508_Angle_PID.Output<-30000)M3508->M3508_Angle_PID.Output = -30000;
-	
-	M3508->output = M3508->M3508_Angle_PID.Output;
 }
 
+//void M3508_Angle_PID(M3508_STU *M3508, int16_t Angle)
+//{
+//	PID_Calculate_Positional(&(M3508->M3508_Angle_PID), M3508->angle_sum, Angle);
+//	
+//	if(M3508->M3508_Angle_PID.Output>30000)M3508->M3508_Angle_PID.Output = 30000;
+//	if(M3508->M3508_Angle_PID.Output<-30000)M3508->M3508_Angle_PID.Output = -30000;
+//	
+//	M3508->output = M3508->M3508_Angle_PID.Output;
+//}
 
